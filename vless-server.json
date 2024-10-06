@@ -4,7 +4,7 @@
       "tag": "VLESS-REALITY-17660.json",
       "type": "vless",
       "listen": "::",
-      "listen_port": 17660,
+      "listen_port": 17661,
       "users": [
         {
           "flow": "xtls-rprx-vision",
