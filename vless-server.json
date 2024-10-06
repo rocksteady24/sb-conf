@@ -1,0 +1,40 @@
+{
+  "inbounds": [
+    {
+      "tag": "VLESS-REALITY-17660.json",
+      "type": "vless",
+      "listen": "::",
+      "listen_port": 17660,
+      "users": [
+        {
+          "flow": "xtls-rprx-vision",
+          "uuid": "a7ed1a53-b52f-4744-bdbc-6fc55d2a418f"
+        }
+      ],
+      "tls": {
+        "enabled": true,
+        "server_name": "cloudcity.fi",
+        "reality": {
+          "enabled": true,
+          "handshake": {
+            "server": "cloudcity.fi",
+            "server_port": 443
+          },
+          "private_key": "oG4SRF-ySCOIZ0J3FUYfciDZmk6bjwdkCoIKklXJlGI",
+          "short_id": [
+            ""
+          ]
+        }
+      }
+    }
+  ],
+  "outbounds": [
+    {
+      "type": "direct"
+    },
+    {
+      "tag": "public_key_EfOUH1VqIo9FY5YHDYIkHYnQ6Vk-6jOkETfoR7zIFyI",
+      "type": "direct"
+    }
+  ]
+}

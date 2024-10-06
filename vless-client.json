@@ -1,0 +1,143 @@
+{
+  "log": {
+    "level": "info",
+    "timestamp": true
+  },
+  "dns": {
+    "servers": [
+      {
+        "tag": "local-dns",
+        "address": "192.168.1.1",
+        "detour": "direct-out"
+      },
+      {
+        "tag": "cloudflare-dns",
+        "address": "https://1.1.1.1/dns-query",
+        "address_resolver": "local-dns",
+        "detour": "vless-out"
+      }
+    ],
+    "rules": [
+      {
+        "network": "udp",
+        "port": 53,
+        "server": "local-dns"
+      },
+      {
+        "rule_set": "antizapret",
+        "server": "cloudflare-dns"
+      }
+    ]
+  },
+  "inbounds": [
+    {
+      "type": "tun",
+      "inet4_address": "172.16.0.1/30",
+      "auto_route": true,
+      "strict_route": true,
+      "sniff": true,
+      "domain_strategy": "prefer_ipv4"
+    }
+  ],
+  "outbounds": [
+    {
+      "type": "direct",
+      "tag": "direct-out"
+    },
+    {
+      "type": "vless",
+      "tag": "vless-out",
+      "server": "185.200.190.62",
+      "server_port": 17660,
+      "uuid": "a7ed1a53-b52f-4744-bdbc-6fc55d2a418f",
+      "flow": "xtls-rprx-vision",
+      "tls": {
+        "enabled": true,
+        "server_name": "cloudcity.fi",
+        "utls": {
+          "enabled": true
+        },
+        "reality": {
+          "enabled": true,
+          "public_key": "EfOUH1VqIo9FY5YHDYIkHYnQ6Vk-6jOkETfoR7zIFyI",
+          "short_id": ""
+        }
+      }
+    },
+    {
+      "type": "dns",
+      "tag": "dns-out"
+    }
+  ],
+  "route": {
+    "rules": [
+      {
+        "rule_set": "antizapret",
+        "outbound": "vless-out"
+      },
+      {
+        "domain_suffix": ".youtube.com",
+        "outbound": "vless-out"
+      },
+      {
+        "domain_suffix": ".googlevideo.com",
+        "outbound": "vless-out"
+      },
+      {
+        "domain_suffix": ".nhacmp3youtube.com",
+        "outbound": "vless-out"
+      },
+      {
+        "domain_suffix": ".1e100.net",
+        "outbound": "vless-out"
+      },
+      {
+        "domain_suffix": ".ytimg.com",
+        "outbound": "vless-out"
+      },
+      {
+        "domain_suffix": ".youtu.be",
+        "outbound": "vless-out"
+      },
+      {
+        "domain_suffix": ".google.com",
+        "outbound": "vless-out"
+      },
+      {
+        "domain_suffix": ".gvt1.com",
+        "outbound": "vless-out"
+      },
+      {
+        "domain_suffix": ".googleusercontent.com",
+        "outbound": "vless-out"
+      },
+      {
+        "domain_suffix": ".googleapis.com",
+        "outbound": "vless-out"
+      },
+      {
+        "domain_suffix": ".gstatic.com",
+        "outbound": "vless-out"
+      },
+      {
+        "protocol": "dns",
+        "outbound": "dns-out"
+      }
+    ],
+    "rule_set": [
+      {
+        "type": "remote",
+        "tag": "antizapret",
+        "format": "binary",
+        "url": "https://github.com/savely-krasovsky/antizapret-sing-box/releases/latest/download/antizapret.srs",
+        "download_detour": "vless-out"
+      }
+    ],
+    "auto_detect_interface": true
+  },
+  "experimental": {
+    "cache_file": {
+      "enabled": true
+    }
+  }
+}
