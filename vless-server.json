@@ -1,7 +1,7 @@
 {
   "inbounds": [
     {
-      "tag": "VLESS-REALITY-17660.json",
+      "tag": "VLESS-REALITY-17661.json",
       "type": "vless",
       "listen": "::",
       "listen_port": 17661,
