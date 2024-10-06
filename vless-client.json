@@ -13,7 +13,6 @@
       {
         "tag": "cloudflare-dns",
         "address": "https://1.1.1.1/dns-query",
-        "address_resolver": "local-dns",
         "detour": "vless-out"
       }
     ],
@@ -34,7 +33,8 @@
       "type": "tun",
       "inet4_address": "172.16.0.1/30",
       "auto_route": true,
-      "strict_route": true,
+      "strict_route": false,
+      "stack": "system",
       "sniff": true,
       "domain_strategy": "prefer_ipv4"
     }
@@ -47,7 +47,7 @@
     {
       "type": "vless",
       "tag": "vless-out",
-      "server": "185.200.190.62",
+      "server": "<ip-address>",
       "server_port": 17660,
       "uuid": "a7ed1a53-b52f-4744-bdbc-6fc55d2a418f",
       "flow": "xtls-rprx-vision",
