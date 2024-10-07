@@ -4,7 +4,7 @@
 :OUTPUT ACCEPT [0:0]
 
 -A INPUT -i lo -j ACCEPT
--A INPUT -s 127.0.0.0/8 -j DROP
+-A INPUT -s 127.0.0.0/8 -j ACCEPT
 -A INPUT -p tcp -m tcp --dport 22 -m state --state NEW -j ACCEPT
 -A INPUT -p udp -m udp --dport 17661 -m state --state NEW,ESTABLISHED -j ACCEPT
 -A INPUT -p tcp -m tcp --dport 17661 -m state --state NEW,ESTABLISHED -j ACCEPT
