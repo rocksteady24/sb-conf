@@ -13,6 +13,7 @@
       {
         "tag": "cloudflare-dns",
         "address": "https://1.1.1.1/dns-query",
+        "address_resolver": "local-dns",
         "detour": "vless-out"
       }
     ],
