@@ -66,8 +66,8 @@
       "type": "hysteria2",
       "server": "REDACTED",
       "server_port": REDACTED,
-      "up_mbps": 100,
-      "down_mbps": 100,
+      "up_mbps": 80,
+      "down_mbps": 80,
       "password": "REDACTED",
       "obfs": {
         "type": "salamander",
