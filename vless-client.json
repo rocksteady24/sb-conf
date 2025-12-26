@@ -1,137 +1,216 @@
 {
   "log": {
-    "level": "info",
+    "disabled": false,
+    "level": "debug",
+    "output": "/etc/sing-box/sing-box.log",
     "timestamp": true
   },
   "dns": {
     "servers": [
       {
-        "tag": "local-dns",
-        "address": "192.168.1.1",
-        "detour": "direct-out"
-      },
-      {
-        "tag": "cloudflare-dns",
-        "address": "https://1.1.1.1/dns-query",
-        "address_resolver": "local-dns",
-        "detour": "vless-out"
+        "tag": "adguard-dns",
+        "type": "tcp",
+        "server": "127.0.0.1",
+        "server_port": 53
       }
     ],
-    "rules": [
-      {
-        "network": "udp",
-        "port": 53,
-        "server": "local-dns"
-      },
-      {
-        "rule_set": "antizapret",
-        "server": "cloudflare-dns"
-      }
-    ]
+    "strategy": "ipv4_only",
+    "final": "adguard-dns"
   },
   "inbounds": [
     {
+      "tag": "tun-in",
       "type": "tun",
-      "inet4_address": "172.16.0.1/30",
+      "interface_name": "tun0",
+      "mtu": 9000,
+      "stack": "mixed",
       "auto_route": true,
-      "strict_route": false,
-      "stack": "system",
+      "strict_route": true,
       "sniff": true,
-      "domain_strategy": "prefer_ipv4"
+      "domain_strategy": "ipv4_only",
+      "address": "10.8.0.1/30"
     }
   ],
   "outbounds": [
     {
-      "type": "direct",
-      "tag": "direct-out"
+      "tag": "direct-out",
+      "type": "direct"
     },
     {
-      "type": "vless",
       "tag": "vless-out",
-      "server": "<ip-address>",
-      "server_port": 17661,
-      "uuid": "a7ed1a53-b52f-4744-bdbc-6fc55d2a418f",
+      "type": "vless",
+      "server": "REDACTED",
+      "server_port": REDACTED,
+      "uuid": "REDACTED",
       "flow": "xtls-rprx-vision",
       "tls": {
         "enabled": true,
-        "server_name": "cloudcity.fi",
+        "server_name": "REDACTED",
         "utls": {
-          "enabled": true
+          "enabled": true,
+          "fingerprint": "chrome"
         },
+        "fragment": true,
+        "fragment_fallback_delay": "200ms",
+        "record_fragment": false,
         "reality": {
           "enabled": true,
-          "public_key": "EfOUH1VqIo9FY5YHDYIkHYnQ6Vk-6jOkETfoR7zIFyI",
-          "short_id": ""
+          "public_key": "REDACTED",
+          "short_id": "REDACTED"
         }
+      },
+      "packet_encoding": "xudp"
+    },
+    {
+      "tag": "hysteria2-out",
+      "type": "hysteria2",
+      "server": "REDACTED",
+      "server_port": REDACTED,
+      "up_mbps": 100,
+      "down_mbps": 100,
+      "password": "REDACTED",
+      "obfs": {
+        "type": "salamander",
+        "password": "REDACTED"
+      },
+      "tls": {
+        "enabled": true,
+        "alpn": [
+          "h3"
+        ],
+        "insecure": false,
+        "server_name": "REDACTED"
       }
     },
     {
-      "type": "dns",
-      "tag": "dns-out"
+      "tag": "trojan-out",
+      "type": "trojan",
+      "server": "REDACTED",
+      "server_port": REDACTED,
+      "password": "REDACTED",
+      "network": "tcp",
+      "tls": {
+        "enabled": true,
+        "insecure": false,
+        "server_name": "REDACTED",
+        "alpn": [
+          "http/1.1"
+        ]
+      }
+    },
+    {
+      "tag": "auto-failover",
+      "type": "urltest",
+      "outbounds": [
+        "vless-out",
+        "hysteria2-out",
+        "trojan-out"
+      ],
+      "url": "http://www.gstatic.com/generate_204",
+      "interval": "2m",
+      "tolerance": 80,
+      "interrupt_exist_connections": false
     }
   ],
   "route": {
-    "rules": [
-      {
-        "rule_set": "antizapret",
-        "outbound": "vless-out"
-      },
-      {
-        "domain_suffix": ".youtube.com",
-        "outbound": "vless-out"
-      },
-      {
-        "domain_suffix": ".googlevideo.com",
-        "outbound": "vless-out"
-      },
-      {
-        "domain_suffix": ".nhacmp3youtube.com",
-        "outbound": "vless-out"
-      },
-      {
-        "domain_suffix": ".1e100.net",
-        "outbound": "vless-out"
-      },
-      {
-        "domain_suffix": ".ytimg.com",
-        "outbound": "vless-out"
-      },
-      {
-        "domain_suffix": ".youtu.be",
-        "outbound": "vless-out"
-      },
-      {
-        "domain_suffix": ".google.com",
-        "outbound": "vless-out"
-      },
-      {
-        "domain_suffix": ".gvt1.com",
-        "outbound": "vless-out"
-      },
-      {
-        "domain_suffix": ".googleusercontent.com",
-        "outbound": "vless-out"
-      },
-      {
-        "domain_suffix": ".googleapis.com",
-        "outbound": "vless-out"
-      },
-      {
-        "domain_suffix": ".gstatic.com",
-        "outbound": "vless-out"
-      },
-      {
-        "protocol": "dns",
-        "outbound": "dns-out"
-      }
-    ],
     "rule_set": [
       {
+        "tag": "geoip-ru-blocked",
         "type": "remote",
-        "tag": "antizapret",
         "format": "binary",
-        "url": "https://github.com/savely-krasovsky/antizapret-sing-box/releases/latest/download/antizapret.srs",
-        "download_detour": "vless-out"
+        "url": "https://github.com/runetfreedom/russia-v2ray-rules-dat/raw/refs/heads/release/sing-box/rule-set-geoip/geoip-ru-blocked.srs",
+        "update_interval": "12h",
+        "download_detour": "direct-out"
+      },
+      {
+        "tag": "geoip-ru-blocked-community",
+        "type": "remote",
+        "format": "binary",
+        "url": "https://github.com/runetfreedom/russia-v2ray-rules-dat/raw/refs/heads/release/sing-box/rule-set-geoip/geoip-ru-blocked-community.srs",
+        "update_interval": "12h",
+        "download_detour": "direct-out"
+      },
+      {
+        "tag": "youtube",
+        "type": "remote",
+        "format": "binary",
+        "url": "https://raw.githubusercontent.com/SagerNet/sing-geosite/rule-set/geosite-youtube.srs",
+        "update_interval": "12h",
+        "download_detour": "direct-out"
+      },
+      {
+        "tag": "whatsapp",
+        "type": "remote",
+        "format": "binary",
+        "url": "https://raw.githubusercontent.com/SagerNet/sing-geosite/rule-set/geosite-whatsapp.srs",
+        "update_interval": "12h",
+        "download_detour": "direct-out"
+      },
+      {
+        "tag": "kinopub",
+        "type": "remote",
+        "format": "binary",
+        "url": "https://raw.githubusercontent.com/SagerNet/sing-geosite/rule-set/geosite-kinopub.srs",
+        "update_interval": "12h",
+        "download_detour": "direct-out"
+      },
+      {
+        "tag": "xai",
+        "type": "remote",
+        "format": "binary",
+        "url": "https://raw.githubusercontent.com/SagerNet/sing-geosite/rule-set/geosite-xai.srs",
+        "update_interval": "12h",
+        "download_detour": "direct-out"
+      },
+      {
+        "tag": "openai",
+        "type": "remote",
+        "format": "binary",
+        "url": "https://raw.githubusercontent.com/SagerNet/sing-geosite/rule-set/geosite-openai.srs",
+        "update_interval": "12h",
+        "download_detour": "direct-out"
+      }
+    ],
+    "rules": [
+      {
+        "rule_set": [
+          "geoip-ru-blocked",
+          "geoip-ru-blocked-community",
+          "whatsapp",
+          "xai",
+          "openai"
+        ],
+        "outbound": "auto-failover"
+      },
+      {
+        "rule_set": [
+          "youtube",
+          "kinopub"
+        ],
+        "outbound": "hysteria2-out"
+      },
+      {
+        "domain_suffix": [
+          "habr.com",
+          "adguard.com",
+          "digitalocean.com",
+          "intel.com",
+          "hashicorp.com",
+          "grafana.com",
+          "serverfault.com",
+          "dnsleaktest.com",
+          "autodesk.com",
+          "vrdesktop.net"
+        ],
+        "outbound": "auto-failover"
+      },
+      {
+        "outbound": "direct-out",
+        "invert": true
+      },
+      {
+        "ip_is_private": true,
+        "outbound": "direct-out"
       }
     ],
     "auto_detect_interface": true
