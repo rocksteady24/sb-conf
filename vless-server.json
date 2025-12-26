@@ -8,7 +8,7 @@
       "users": [
         {
           "flow": "xtls-rprx-vision",
-          "uuid": "a7ed1a53-b52f-4744-bdbc-6fc55d2a418f"
+          "uuid": "REDACTED"
         }
       ],
       "tls": {
@@ -20,7 +20,7 @@
             "server": "cloudcity.fi",
             "server_port": 443
           },
-          "private_key": "oG4SRF-ySCOIZ0J3FUYfciDZmk6bjwdkCoIKklXJlGI",
+          "private_key": "REDACTED",
           "short_id": [
             ""
           ]
@@ -33,7 +33,7 @@
       "type": "direct"
     },
     {
-      "tag": "public_key_EfOUH1VqIo9FY5YHDYIkHYnQ6Vk-6jOkETfoR7zIFyI",
+      "tag": "public_key_REDACTED",
       "type": "direct"
     }
   ]
