@@ -3,18 +3,36 @@
 :FORWARD DROP [0:0]
 :OUTPUT DROP [0:0]
 
+# --- Loopback ---
 -A INPUT -i lo -j ACCEPT
 -A INPUT -s 127.0.0.0/8 -j ACCEPT
+
+# --- ICMP ping ---
 -A INPUT -p icmp --icmp-type echo-request -j ACCEPT
--A INPUT -p tcp -m tcp --dport 22 -m state --state NEW -j ACCEPT
--A INPUT -p tcp -m tcp --dport 17661 -m state --state NEW,ESTABLISHED -j ACCEPT
+
+# --- Established/related connections ---
 -A INPUT -m state --state RELATED,ESTABLISHED -j ACCEPT
+
+# --- SSH ---
+-A INPUT -p tcp --dport 52552 -m state --state NEW -j ACCEPT
+
+# --- nginx ---
+-A INPUT -p tcp --dport 80  -m state --state NEW -j ACCEPT
+-A INPUT -p tcp --dport 443 -m state --state NEW -j ACCEPT
+
+# --- sing-box ---
+-A INPUT -p tcp --dport 52460 -m state --state NEW -j ACCEPT
+-A INPUT -p tcp --dport 52461 -m state --state NEW -j ACCEPT
+-A INPUT -p tcp --dport 52462 -m state --state NEW -j ACCEPT
+
+# --- Log dropped packets ---
 -A INPUT -j LOG --log-prefix "iptables dropped: " --log-level 7
 
+# --- Output ---
 -A OUTPUT -o lo -j ACCEPT
 -A OUTPUT -m state --state RELATED,ESTABLISHED -j ACCEPT
--A OUTPUT -p tcp -m state --state NEW,ESTABLISHED -j ACCEPT
--A OUTPUT -p udp -m state --state NEW,ESTABLISHED -j ACCEPT
+-A OUTPUT -p tcp  -m state --state NEW,ESTABLISHED -j ACCEPT
+-A OUTPUT -p udp  -m state --state NEW,ESTABLISHED -j ACCEPT
 -A OUTPUT -p icmp -m state --state NEW,ESTABLISHED -j ACCEPT
 
 COMMIT
